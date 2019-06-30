@@ -1,26 +1,29 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import { connect } from 'react-redux';
+import { Route } from "react-router-dom";
+import Login from "./views/Login";
+import { useAuth, userContext } from "./hooks/useAuth";
+import { withRouter } from 'react-router-dom';
+import { History } from 'history';
 
-const App: React.FC = () => {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+require( 'dotenv' ).config();
+
+const App: React.FC<IProps> = ( props ) => {
+    const [ initalizing, user, userData, userExists, addUser ] = useAuth(
+        props.history );
+    return (
+        <>
+            <userContext.Provider
+                value={ { user, userData, userExists, addUser } }>
+                <Route path={ "/" } component={ Login }/>
+            </userContext.Provider>
+        </>
+    );
+};
+
+interface IProps {
+    history?: History
 }
 
-export default App;
+export default withRouter( App );
